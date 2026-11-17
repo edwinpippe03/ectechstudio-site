@@ -2076,13 +2076,18 @@ function googleTranslateElementInit(){
     var m = document.cookie.match(/googtrans=([^;]+)/);
     return m && m[1].includes('/es') ? 'es' : 'en';
   }
-  function setLang(lang){
-    // Google uses a cookie like /en/es
-    var val = lang === 'es' ? '/en/es' : '/en/en';
-    document.cookie = 'googtrans=' + val + ';path=/;';
-    document.cookie = 'googtrans=' + val + ';path=/;domain=' + location.hostname + ';';
+    function setLang(lang){
     localStorage.setItem('ectech-lang', lang);
-    location.reload();
+    var select = document.querySelector('.goog-te-combo');
+    if(select){
+      select.value = lang;
+      select.dispatchEvent(new Event('change'));
+      btn.textContent = lang === 'es' ? 'EN 🇺🇸' : 'ES 🇪🇸';
+    } else {
+      // Google hasn't loaded yet, try again in a sec
+      setTimeout(function(){ setLang(lang); }, 500);
+    }
+  }
   }
 
   function updateBtn(){
@@ -2093,7 +2098,6 @@ function googleTranslateElementInit(){
   });
   updateBtn();
 })();
-</script>
 </script>
 </body>
 </html>
