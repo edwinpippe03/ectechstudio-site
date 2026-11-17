@@ -2053,76 +2053,47 @@ Error generating stack: `+u.message+`
 })();
 </script>
     <script>
-// --- E&C Language Toggle EN / ES ---
+<!-- Google Translate - Full Page EN / ES -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'en', includedLanguages:'en,es', autoDisplay:false}, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+// --- E&C Full Page Toggle ---
 (function(){
-  var dict = {
-    // NAV + BUTTONS
-    "Book a Call": "Reservar una llamada",
-    "Services": "Servicios",
-    "About & Clean IP": "Nosotros y IP Limpio",
-    "Contact": "Contacto",
-    "Send Message": "Enviar Mensaje",
-    "Confirm Booking": "Confirmar Reserva",
-    // HERO
-    "We build & break things so they don't break for you.": "Construimos y probamos cosas para que no se dañen para ti.",
-    "Custom Genesys Cloud tools, QA test automation, IVR audits, and web development — built independently with public APIs. Clean IP, guaranteed.": "Herramientas personalizadas para Genesys Cloud, automatización de pruebas QA, auditorías de IVR y desarrollo web — construido independientemente con APIs públicas. IP Limpio, garantizado.",
-    // SECTIONS
-    "What are you working on, what's the timeline, and how can we help?": "¿En qué estás trabajando, cuál es el tiempo estimado y cómo podemos ayudarte?",
-    "Preferred Contact Method": "Método de contacto preferido",
-    "Email": "Correo",
-    "Phone": "Teléfono",
-    "Video Call": "Videollamada",
-    "Your details go only to E&C Tech Studio. Clean IP on every project — built independently with public APIs.": "Tus datos solo van a E&C Tech Studio. IP Limpio en cada proyecto — construido independientemente con APIs públicas.",
-    "Based in": "Ubicado en",
-    "Kissimmee, FL · Remote across the US": "Kissimmee, FL · Remoto en todo EE.UU.",
-    "Company": "Empresa",
-    "Explore": "Explorar",
-    "Get In Touch": "Contáctanos",
-    "Book a Call": "Reservar una llamada"
-  };
-
-  // Create floating button - no header edit needed
-  var btn = document.createElement('button');
-  btn.id = 'lang-toggle-btn';
-  btn.textContent = 'ES 🇪🇸';
+  var btn = document.getElementById('lang-toggle-btn');
+  if(!btn){
+    btn = document.createElement('button');
+    btn.id = 'lang-toggle-btn';
+    document.body.appendChild(btn);
+  }
   btn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;background:#0ea5e9;color:#fff;border:none;padding:12px 18px;border-radius:999px;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-size:14px;';
-  document.body.appendChild(btn);
 
-  var current = localStorage.getItem('ectech-lang') || 'en';
-
-  function translate(lang){
-    // Walk all text nodes
-    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-    var nodes = [];
-    var n;
-    while(n = walker.nextNode()) nodes.push(n);
-    nodes.forEach(function(node){
-      var original = node.nodeValue.trim();
-      if(!original) return;
-      if(lang === 'es' && dict[original]){
-        if(!node._en) node._en = original;
-        node.nodeValue = node.nodeValue.replace(original, dict[original]);
-      } else if(lang === 'en' && node._en){
-        node.nodeValue = node.nodeValue.replace(node.nodeValue.trim(), node._en);
-      }
-    });
-    // Placeholders too
-    document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(function(el){
-      if(!el._enPh) el._enPh = el.placeholder;
-      if(lang === 'es' && dict[el._enPh]) el.placeholder = dict[el._enPh];
-      if(lang === 'en') el.placeholder = el._enPh;
-    });
-    btn.textContent = lang === 'en' ? 'ES 🇪🇸' : 'EN 🇺🇸';
+  function getLang(){
+    var m = document.cookie.match(/googtrans=([^;]+)/);
+    return m && m[1].includes('/es') ? 'es' : 'en';
+  }
+  function setLang(lang){
+    // Google uses a cookie like /en/es
+    var val = lang === 'es' ? '/en/es' : '/en/en';
+    document.cookie = 'googtrans=' + val + ';path=/;';
+    document.cookie = 'googtrans=' + val + ';path=/;domain=' + location.hostname + ';';
     localStorage.setItem('ectech-lang', lang);
-    current = lang;
+    location.reload();
   }
 
+  function updateBtn(){
+    btn.textContent = getLang() === 'es' ? 'EN 🇺🇸' : 'ES 🇪🇸';
+  }
   btn.addEventListener('click', function(){
-    translate(current === 'en' ? 'es' : 'en');
+    setLang(getLang() === 'es' ? 'en' : 'es');
   });
-
-  if(current === 'es') translate('es');
+  updateBtn();
 })();
+</script>
 </script>
 </body>
 </html>
